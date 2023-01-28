@@ -18,15 +18,15 @@ public class User {
     private String name;
     private String phoneNumber;
     private String password;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Reservation> reservationList;
 
     public User(){
         reservationList=new ArrayList<>();
     }
-    public User(String name,String phoneNumber,String password){
-        this.name=name;
-        this.phoneNumber=phoneNumber;
-        this.password=password;
-    }
+//    public User(String name,String phoneNumber,String password){
+//        this.name=name;
+//        this.phoneNumber=phoneNumber;
+//        this.password=password;
+//    }
 }

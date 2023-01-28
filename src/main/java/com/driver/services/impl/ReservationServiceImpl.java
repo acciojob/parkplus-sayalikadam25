@@ -26,19 +26,17 @@ public class ReservationServiceImpl implements ReservationService {
         //Reserve a spot in the given parkingLot such that the total price is minimum. Note that the price per hour for each spot is different
         //Note that the vehicle can only be parked in a spot having a type equal to or larger than given vehicle
         //If parkingLot is not found, user is not found, or no spot is available, throw "Cannot make reservation" exception.
+
+        if(!parkingLotRepository3.existsById(parkingLotId) || !userRepository3.existsById(userId)){
+            throw new Exception("Cannot make reservation");
+        }
         User user=userRepository3.findById(userId).get();
         ParkingLot parkingLot=parkingLotRepository3.findById(parkingLotId).get();
         List<Spot> spotList=parkingLot.getSpotList();
-        int reservationAmount=Integer.MAX_VALUE;
-
         Reservation reservation=new Reservation();
 
-        if(parkingLot==null || !parkingLotRepository3.existsById(parkingLotId)){
-            throw new Exception("Cannot make reservation");
-        }
-        if(user==null || !userRepository3.existsById(userId)){
-            throw new Exception("Cannot make reservation");
-        }
+        int reservationAmount=Integer.MAX_VALUE;
+
         boolean spotAvailable=false;
         Spot spot1=new Spot();
         for(Spot spot:spotList){
@@ -55,17 +53,24 @@ public class ReservationServiceImpl implements ReservationService {
 
         spot1.setOccupied(true);
         reservation.setSpot(spot1);
-        spot1.getReservationList().add(reservation);
         reservation.setUser(user);
+        reservation.setNumberOfHours(timeInHours);
+        user.getReservationList().add(reservation);
+        spot1.getReservationList().add(reservation);
+
+
         spotRepository3.save(spot1);
-        reservation.setBill(reservationAmount);
+        userRepository3.save(user);
         reservationRepository3.save(reservation);
         return reservation;
     }
     public boolean isParkPossible(Spot spot,Integer numberOfWheels){
-        if((numberOfWheels==2 && spot.getSpotType()==SpotType.TWO_WHEELER) || (numberOfWheels==4 && spot.getSpotType()==SpotType.FOUR_WHEELER) || (numberOfWheels>4 && spot.getSpotType()==SpotType.OTHERS))
+        if(!spot.getOccupied() && numberOfWheels==2 && spot.getSpotType()==SpotType.TWO_WHEELER)
             return true;
-        else
-            return false;
+        else if(!spot.getOccupied() && (numberOfWheels>2 && numberOfWheels<=4) && spot.getSpotType()==SpotType.FOUR_WHEELER)
+            return true;
+        else if(!spot.getOccupied() && numberOfWheels>4 && spot.getSpotType()==SpotType.OTHERS)
+            return true;
+        return false;
     }
 }

@@ -14,10 +14,11 @@ public class Payment {
     private int id;
 
     private boolean paymentCompleted;
-
+    @Enumerated(EnumType.STRING)
     private PaymentMode paymentMode;
 
     @OneToOne(mappedBy = "reservation")
+    @JoinColumn
     private Reservation reservation;
     public Payment(){
 

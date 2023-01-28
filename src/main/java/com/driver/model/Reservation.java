@@ -14,7 +14,6 @@ public class Reservation {
     private int id;
 
     private int numberOfHours;
-    private int bill;
 
     @ManyToOne
     @JoinColumn
@@ -24,7 +23,7 @@ public class Reservation {
     @JoinColumn
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "reservation",cascade = CascadeType.ALL)
     private Payment payment;
 
     public Reservation(){
