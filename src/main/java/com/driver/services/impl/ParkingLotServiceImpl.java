@@ -54,7 +54,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     }
 
     @Override
-    public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
+    public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) throws Exception{
         if(spotRepository1.existsById(spotId) && parkingLotRepository1.existsById(parkingLotId)){
             ParkingLot parkingLot=parkingLotRepository1.findById(parkingLotId).get();
             Spot spot=spotRepository1.findById(spotId).get();
@@ -65,9 +65,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
             parkingLot.setSpotList(list);
             parkingLotRepository1.save(parkingLot);
             return spot;
-        }else{
-            return null;
         }
+        else
+            throw new Exception("Invalid details");
     }
 
     @Override
