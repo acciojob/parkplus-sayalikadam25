@@ -35,8 +35,6 @@ public class ParkingLotServiceImpl implements ParkingLotService {
             list = parkingLot.getSpotList();
         else
             list = new ArrayList<>();
-        list.add(spot);
-        parkingLot.setSpotList(list);
         spot.setParkingLot(parkingLot);
         if(numberOfWheels==2)
             spot.setSpotType(SpotType.TWO_WHEELER);
@@ -46,6 +44,8 @@ public class ParkingLotServiceImpl implements ParkingLotService {
             spot.setSpotType(SpotType.OTHERS);
 //        spotRepository1.save(spot);
         spot.setOccupied(true);
+        list.add(spot);
+        parkingLot.setSpotList(list);
         parkingLotRepository1.save(parkingLot);
         return spotRepository1.save(spot);
     }
