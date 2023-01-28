@@ -28,7 +28,7 @@ public class PaymentServiceImpl implements PaymentService {
         if(reservation.getBill()>amountSent)
             throw new Exception("Insufficient Amount");
         String modeOfPayment=mode.toLowerCase();
-        if(!reservation.getPayment().getPaymentMode().equals(modeOfPayment))
+        if(!reservation.getPayment().getPaymentMode().toString().equals(modeOfPayment))
             throw new Exception("Payment mode not detected");
         Payment payment=new Payment();
         payment.setReservation(reservation);

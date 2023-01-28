@@ -33,10 +33,10 @@ public class ReservationServiceImpl implements ReservationService {
 
         Reservation reservation=new Reservation();
 
-        if(parkingLot==null || !parkingLotRepository3.existsById(parkingLotId)){
+        if(!parkingLotRepository3.existsById(parkingLotId)){
             throw new Exception("Cannot make reservation");
         }
-        if(user==null || !userRepository3.existsById(userId)){
+        if(!userRepository3.existsById(userId)){
             throw new Exception("Cannot make reservation");
         }
         boolean spotAvailable=false;
