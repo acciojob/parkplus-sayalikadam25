@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ParkingLotServiceImpl implements ParkingLotService {
@@ -28,7 +30,13 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     public Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour) {
         ParkingLot parkingLot=parkingLotRepository1.findById(parkingLotId).get();
         Spot spot=new Spot(pricePerHour);
-        parkingLot.getSpotList().add(spot);
+        List<Spot> list;
+        if(Objects.nonNull(parkingLot.getSpotList()) && !parkingLot.getSpotList().isEmpty())
+            list = parkingLot.getSpotList();
+        else
+            list = new ArrayList<>();
+        list.add(spot);
+        parkingLot.setSpotList(list);
         spot.setParkingLot(parkingLot);
         if(numberOfWheels==2)
             spot.setSpotType(SpotType.TWO_WHEELER);
