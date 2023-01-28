@@ -26,10 +26,10 @@ public class PaymentServiceImpl implements PaymentService {
         //Note that the reservationId always exists
         Reservation reservation=reservationRepository2.findById(reservationId).get();
         if(reservation.getBill()>amountSent)
-            throw new Exception("Insufficient Amount");
+            throw new Exception();
         String modeOfPayment=mode.toLowerCase();
         if(!reservation.getPayment().getPaymentMode().toString().equals(modeOfPayment))
-            throw new Exception("Payment mode not detected");
+            throw new Exception();
         Payment payment=new Payment();
         payment.setReservation(reservation);
         payment.setPaymentCompleted(true);
