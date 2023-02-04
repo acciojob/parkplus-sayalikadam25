@@ -21,34 +21,32 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment pay(Integer reservationId, int amountSent, String mode) throws Exception {
-        //Attempt a payment of amountSent for reservationId using the given mode ("cASh", "card", or "upi")
-        //If the amountSent is less than bill, throw "Insufficient Amount" exception, otherwise update payment attributes
-        //If the mode contains a string other than "cash", "card", or "upi" (any character in uppercase or lowercase), throw "Payment mode not detected" exception.
-        //Note that the reservationId always exists
         Reservation reservation = reservationRepository2.findById(reservationId).get();
         Spot spot = reservation.getSpot();
         int bill = spot.getPricePerHour() * reservation.getNumberOfHours();
 
-        if (amountSent != bill)
-            throw new Exception("Insufficient Amount");
+        Payment payment = new Payment();
+        payment.setReservation(reservation);
+        String updatedMode=mode.toUpperCase();
+        payment.setPaymentCompleted(false);
 
-        if (mode.equalsIgnoreCase("cash") || mode.equalsIgnoreCase("card") || mode.equalsIgnoreCase("upi")) {
-            Payment payment = new Payment();
-
-            if (mode.equalsIgnoreCase("cash"))
-                payment.setPaymentMode(PaymentMode.CASH);
-            else if (mode.equalsIgnoreCase("card"))
-                payment.setPaymentMode(PaymentMode.CARD);
-            else
-                payment.setPaymentMode(PaymentMode.UPI);
-
-            payment.setPaymentCompleted(true);
-            payment.setReservation(reservation);
-            reservation.setPayment(payment);
-            reservationRepository2.save(reservation);
-            return payment;
-        } else {
+        if (updatedMode.equals("CASH"))
+            payment.setPaymentMode(PaymentMode.CASH);
+        else if (updatedMode.equals("CARD"))
+            payment.setPaymentMode(PaymentMode.CARD);
+        else if(updatedMode.equals("UPI"))
+            payment.setPaymentMode(PaymentMode.UPI);
+        else
             throw new Exception("Payment mode not detected");
+        if(amountSent<bill){
+            throw new Exception("Insufficient Amount");
         }
+        spot.setOccupied(false);
+        payment.setPaymentCompleted(true);
+        payment.setReservation(reservation);
+        reservation.setPayment(payment);
+        reservationRepository2.save(reservation);
+        return payment;
+
     }
 }
